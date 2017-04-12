@@ -41,6 +41,7 @@ import java.util.List;
 
 import projekt.substratum.ProfileErrorInfoActivity;
 import projekt.substratum.R;
+import projekt.substratum.Substratum;
 import projekt.substratum.config.FileOperations;
 import projekt.substratum.config.References;
 import projekt.substratum.config.ThemeInterfacerService;
@@ -104,6 +105,7 @@ public class ScheduledProfileService extends JobService {
         @Override
         protected void onPreExecute() {
             Log.d("ScheduledProfile", "processing...");
+            Substratum.getInstance().startBinderService();
             String title_parse = String.format(getString(R.string.profile_notification_title),
                     extra);
             mNotifyManager.cancel(NOTIFICATION_ID);
