@@ -169,8 +169,6 @@ dependencies {
     compile 'com.eightbitlab:blurview:1.3.3'
     // Image Processing
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.5'
-    // Direct Interface to the Overlay Manager Service
-    compile files('src/main/libs/overlay-manager-service.jar')
     // Expandable Layout
     compile 'net.cachapa.expandablelayout:expandablelayout:2.9.1'
     // Floating App Head
