@@ -295,6 +295,7 @@ public class MainActivity extends SubstratumActivity implements
 
         References.setROMVersion(getApplicationContext(), false);
         References.setAndCheckOMS(getApplicationContext());
+        References.setAndCheckSubstratumService(getApplicationContext());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -737,6 +738,7 @@ public class MainActivity extends SubstratumActivity implements
                             prefs.edit().remove("oms_version").apply();
                             References.setROMVersion(getApplicationContext(), true);
                             References.setAndCheckOMS(getApplicationContext());
+                            References.setAndCheckSubstratumService(getApplicationContext());
                             this.recreate();
                         }
 
@@ -782,6 +784,7 @@ public class MainActivity extends SubstratumActivity implements
                 prefs.edit().remove("oms_state").apply();
                 prefs.edit().remove("oms_version").apply();
                 References.setAndCheckOMS(getApplicationContext());
+                References.setAndCheckSubstratumService(getApplicationContext());
                 this.recreate();
             }
 
@@ -1222,7 +1225,8 @@ public class MainActivity extends SubstratumActivity implements
                     (!result &&
                             !References.isSamsung(context) &&
                             ENABLE_ROOT_CHECK && !BYPASS_ALL_VERSION_CHECKS &&
-                            !References.checkThemeInterfacer(context))) {
+                            !References.checkThemeInterfacer(context) &&
+                            !References.checkSubstratumService(context))) {
                 activity.mProgressDialog.setCancelable(false);
                 activity.mProgressDialog.show();
                 activity.mProgressDialog.setContentView(R.layout.root_rejected_loader);

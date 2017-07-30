@@ -511,7 +511,8 @@ public class ManagerFragment extends Fragment {
                 // The magic goes here
                 ThemeManager.disableOverlay(context, data);
 
-                if (!References.checkThemeInterfacer(context) &&
+                if (References.checkSubstratumService(context) &&
+                        !References.checkThemeInterfacer(context) &&
                         References.needsRecreate(context, data)) {
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(() -> {
@@ -713,7 +714,8 @@ public class ManagerFragment extends Fragment {
                 // The magic goes here
                 ThemeManager.enableOverlay(context, data);
 
-                if (!References.checkThemeInterfacer(context) &&
+                if (References.checkSubstratumService(context) &&
+                        !References.checkThemeInterfacer(context) &&
                         References.needsRecreate(context, data)) {
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(() -> {
@@ -772,7 +774,8 @@ public class ManagerFragment extends Fragment {
             // The magic goes here
             ThemeManager.uninstallOverlay(context, data);
 
-            if (!References.checkThemeInterfacer(context) &&
+            if (References.checkSubstratumService(context) &&
+                    !References.checkThemeInterfacer(context) &&
                     References.needsRecreate(context, data) &&
                     !References.isSamsung(context)) {
                 Handler handler = new Handler(Looper.getMainLooper());

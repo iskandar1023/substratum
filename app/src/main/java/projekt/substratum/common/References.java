@@ -563,7 +563,7 @@ public class References {
         try {
             boolean foundOms = false;
             if (!isSamsungDevice(context)) {
-                if (checkThemeInterfacer(context)) {
+                if (checkThemeInterfacer(context) || checkSubstratumService(context)) {
                     foundOms = true;
                 } else {
                     String out = Root.runCommand("cmd overlay").split("\n")[0];
@@ -674,7 +674,9 @@ public class References {
         return result;
     }
 
-    public static boolean checkSubstratumService() {
+    public static void setAndCheckSubstratumService(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putBoolean("substratum_service_present", false).apply();
         Process p = null;
         try {
             p = Runtime.getRuntime().exec("cmd -l");
@@ -683,7 +685,8 @@ public class References {
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (line.contains("substratum")) {
-                        return true;
+                        prefs.edit().putBoolean("substratum_service_present", true).apply();
+                        break;
                     }
                 }
             }
@@ -694,7 +697,15 @@ public class References {
                 p.destroy();
             }
         }
-        return false;
+    }
+
+    public static boolean checkSubstratumService(Context context) {
+        if (context == null) return true; // Safe to assume that window refreshes only on OMS
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.contains("substratum_service_present")) {
+            setAndCheckSubstratumService(context);
+        }
+        return prefs.getBoolean("substratum_service_present", false);
     }
 
     // Load SharedPreference defaults

@@ -44,6 +44,7 @@ import static android.content.om.OverlayInfo.STATE_NOT_APPROVED_DANGEROUS_OVERLA
 import static projekt.substratum.common.References.INTERFACER_PACKAGE;
 import static projekt.substratum.common.References.LEGACY_NEXUS_DIR;
 import static projekt.substratum.common.References.checkOMS;
+import static projekt.substratum.common.References.checkSubstratumService;
 import static projekt.substratum.common.References.checkThemeInterfacer;
 
 public class ThemeManager {
@@ -86,7 +87,9 @@ public class ThemeManager {
         overlays.removeAll(listOverlays(context, STATE_APPROVED_ENABLED));
         if (overlays.isEmpty()) return;
 
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.switchOverlay(overlays, true, shouldRestartUI(context, overlays));
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.enableOverlays(context, overlays, shouldRestartUI(context,
                     overlays));
         } else {
@@ -109,7 +112,9 @@ public class ThemeManager {
         overlays.removeAll(listOverlays(context, STATE_APPROVED_DISABLED));
         if (overlays.isEmpty()) return;
 
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.switchOverlay(overlays, false, shouldRestartUI(context, overlays));
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.disableOverlays(context, overlays, shouldRestartUI(context,
                     overlays));
         } else {
@@ -128,7 +133,9 @@ public class ThemeManager {
     }
 
     public static void setPriority(Context context, ArrayList<String> overlays) {
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.changePriority(overlays, shouldRestartUI(context, overlays));
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.setPriority(
                     context, overlays, shouldRestartUI(context, overlays));
         } else {
@@ -428,7 +435,11 @@ public class ThemeManager {
      */
 
     public static void installOverlay(Context context, String overlay) {
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(overlay);
+            SubstratumService.installOverlay(list);
+        } else if (checkThemeInterfacer(context)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(overlay);
             ThemeInterfacerService.installOverlays(context, list);
@@ -438,7 +449,9 @@ public class ThemeManager {
     }
 
     public static void installOverlay(Context context, ArrayList<String> overlays) {
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.installOverlay(overlays);
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.installOverlays(context, overlays);
         } else {
             StringBuilder packages = new StringBuilder();
@@ -457,7 +470,9 @@ public class ThemeManager {
         disableOverlay(context, temp);
 
         // if enabled list is not contains any overlays
-        if (checkThemeInterfacer(context) && !References.isSamsung(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.uninstallOverlay(overlays, shouldRestartUi);
+        } else if (checkThemeInterfacer(context) && !References.isSamsung(context)) {
             ThemeInterfacerService.uninstallOverlays(
                     context,
                     overlays,
