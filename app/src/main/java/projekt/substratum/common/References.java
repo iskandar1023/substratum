@@ -674,6 +674,29 @@ public class References {
         return result;
     }
 
+    public static boolean checkSubstratumService() {
+        Process p = null;
+        try {
+            p = Runtime.getRuntime().exec("cmd -l");
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.contains("substratum")) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
+        }
+        return false;
+    }
+
     // Load SharedPreference defaults
     public static void loadDefaultConfig(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
