@@ -36,10 +36,12 @@ import java.util.zip.ZipInputStream;
 import javax.crypto.Cipher;
 
 import projekt.substratum.common.commands.FileOperations;
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 import projekt.substratum.common.platform.ThemeManager;
 
 import static projekt.substratum.common.References.checkOMS;
+import static projekt.substratum.common.References.checkSubstratumService;
 import static projekt.substratum.common.References.checkThemeInterfacer;
 
 public class FontManager {
@@ -49,7 +51,9 @@ public class FontManager {
             String theme_pid,
             String name,
             Cipher cipher) {
-        if (checkOMS(context) && checkThemeInterfacer(context)) {
+        if (checkOMS(context) && checkSubstratumService(context)) {
+            SubstratumService.setFonts(theme_pid, name);
+        } else if (checkOMS(context) && checkThemeInterfacer(context)) {
             ThemeInterfacerService.setFonts(context, theme_pid, name);
         } else {
             // oms no theme interfacer or legacy
@@ -202,7 +206,9 @@ public class FontManager {
     }
 
     public static void clearFonts(Context context) {
-        if (checkOMS(context) && checkThemeInterfacer(context)) {
+        if (checkOMS(context) && checkSubstratumService(context)) {
+            SubstratumService.clearFonts();
+        } else if (checkOMS(context) && checkThemeInterfacer(context)) {
             ThemeInterfacerService.clearFonts(context);
         } else {
             // oms with no theme interfacer and legacy

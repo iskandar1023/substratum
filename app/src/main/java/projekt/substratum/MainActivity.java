@@ -1313,7 +1313,8 @@ public class MainActivity extends SubstratumActivity implements
             MainActivity activity = ref.get();
             Context context = activity.getApplicationContext();
             if (!References.isSamsungDevice(context) &&
-                    !References.checkThemeInterfacer(context)) {
+                    !References.checkThemeInterfacer(context) &&
+                    !References.checkSubstratumService(context)) {
                 Boolean receivedRoot = Root.requestRootAccess();
                 if (receivedRoot) {
                     Log.d(SUBSTRATUM_LOG, "Substratum has loaded in rooted mode.");

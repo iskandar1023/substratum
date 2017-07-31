@@ -23,9 +23,11 @@ import android.os.Environment;
 import android.util.Log;
 
 import projekt.substratum.common.commands.FileOperations;
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 
 import static projekt.substratum.common.References.EXTERNAL_STORAGE_CACHE;
+import static projekt.substratum.common.References.checkSubstratumService;
 import static projekt.substratum.common.References.checkThemeInterfacer;
 import static projekt.substratum.common.References.getDeviceEncryptionStatus;
 
@@ -35,7 +37,11 @@ public class BootAnimationManager {
         String location = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 EXTERNAL_STORAGE_CACHE + "bootanimation.zip";
         // Check to see if device is decrypted with theme interface
-        if (getDeviceEncryptionStatus(context) <= 1 && checkThemeInterfacer(context)) {
+        if (getDeviceEncryptionStatus(context) <= 1 && checkSubstratumService(context)) {
+            Log.d("BootAnimationUtils",
+                    "No-root option has been enabled with the inclusion of substratum service...");
+            SubstratumService.setBootAnimation(location);
+        } else if (getDeviceEncryptionStatus(context) <= 1 && checkThemeInterfacer(context)) {
             Log.d("BootAnimationUtils",
                     "No-root option has been enabled with the inclusion of theme interfacer...");
             ThemeInterfacerService.setBootAnimation(context, location);
@@ -57,8 +63,10 @@ public class BootAnimationManager {
 
     public static void clearBootAnimation(Context context) {
         if (getDeviceEncryptionStatus(context) <= 1) {
-            // OMS with theme interface
-            if (checkThemeInterfacer(context)) {
+            // OMS with theme interface or substratum service
+            if (checkSubstratumService(context)) {
+                SubstratumService.clearBootAnimation();
+            } else if (checkThemeInterfacer(context)) {
                 ThemeInterfacerService.clearBootAnimation(context);
             } else {
                 FileOperations.delete(context, "/data/system/theme/bootanimation.zip");

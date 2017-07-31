@@ -39,10 +39,12 @@ import java.io.OutputStream;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 import projekt.substratum.util.files.Root;
 
 import static projekt.substratum.common.References.ENABLE_DIRECT_ASSETS_LOGGING;
+import static projekt.substratum.common.References.checkSubstratumService;
 import static projekt.substratum.common.References.checkThemeInterfacer;
 
 public class FileOperations {
@@ -141,7 +143,9 @@ public class FileOperations {
                 !destination.startsWith(dataDir) && !destination.startsWith(externalDir) &&
                         !destination.startsWith("/system")) || (!destination.startsWith(dataDir) &&
                 !destination.startsWith(externalDir) && !destination.startsWith("/system"));
-        if (checkThemeInterfacer(context) && needRoot) {
+        if (checkSubstratumService(context) && needRoot) {
+            SubstratumService.createNewFolder(destination);
+        } else if (checkThemeInterfacer(context) && needRoot) {
             ThemeInterfacerService.createNewFolder(context, destination);
         } else {
             createNewFolder(destination);
@@ -168,7 +172,11 @@ public class FileOperations {
         boolean needRoot = (!source.startsWith(dataDir) && !source.startsWith(externalDir) &&
                 !source.startsWith("/system")) || (!destination.startsWith(dataDir) &&
                 !destination.startsWith(externalDir) && !destination.startsWith("/system"));
-        if (checkThemeInterfacer(context) && needRoot) {
+        if (checkSubstratumService(context) && needRoot) {
+            Log.d(COPY_LOG,
+                    "Using substratum service operation to copy " + source + " to " + destination);
+            SubstratumService.copy(source, destination);
+        } else if (checkThemeInterfacer(context) && needRoot) {
             Log.d(COPY_LOG,
                     "Using theme interface operation to copy " + source + " to " + destination);
             ThemeInterfacerService.copy(context, source, destination);
@@ -215,7 +223,7 @@ public class FileOperations {
         boolean needRoot = (!source.startsWith(dataDir) && !source.startsWith(externalDir) &&
                 !source.startsWith("/system")) || (!destination.startsWith(dataDir) &&
                 !destination.startsWith(externalDir) && !destination.startsWith("/system"));
-        if (checkThemeInterfacer(context) && needRoot) {
+        if ((checkSubstratumService(context) || checkThemeInterfacer(context)) && needRoot) {
             copy(context, source, destination);
         } else {
             copyDir(source, destination);
@@ -253,7 +261,10 @@ public class FileOperations {
         String externalDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         boolean needRoot = (!directory.startsWith(dataDir) && !directory.startsWith(externalDir) &&
                 !directory.startsWith("/system"));
-        if (checkThemeInterfacer(context) && needRoot) {
+        if (checkSubstratumService(context) && needRoot) {
+            Log.d(DELETE_LOG, "Using substratum service operation to delete " + directory);
+            SubstratumService.delete(directory, deleteParent);
+        } else if (checkThemeInterfacer(context) && needRoot) {
             Log.d(DELETE_LOG, "Using theme interfacer operation to delete " + directory);
             ThemeInterfacerService.delete(context, directory, deleteParent);
 
@@ -317,7 +328,11 @@ public class FileOperations {
         boolean needRoot = (!source.startsWith(dataDir) && !source.startsWith(externalDir) &&
                 !source.startsWith("/system")) || (!destination.startsWith(dataDir) &&
                 !destination.startsWith(externalDir) && !destination.startsWith("/system"));
-        if (checkThemeInterfacer(context) && needRoot) {
+        if (checkSubstratumService(context) && needRoot) {
+            Log.d(MOVE_LOG,
+                    "Using substratum service operation to move " + source + " to " + destination);
+            SubstratumService.move(source, destination);
+        } else if (checkThemeInterfacer(context) && needRoot) {
             Log.d(MOVE_LOG,
                     "Using theme interfacer operation to move " + source + " to " + destination);
             ThemeInterfacerService.move(context, source, destination);

@@ -134,7 +134,7 @@ public class ThemeManager {
 
     public static void setPriority(Context context, ArrayList<String> overlays) {
         if (checkSubstratumService(context)) {
-            SubstratumService.changePriority(overlays, shouldRestartUI(context, overlays));
+            SubstratumService.setPriority(overlays, shouldRestartUI(context, overlays));
         } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.setPriority(
                     context, overlays, shouldRestartUI(context, overlays));
@@ -159,7 +159,9 @@ public class ThemeManager {
     }
 
     public static void restartSystemUI(Context context) {
-        if (checkThemeInterfacer(context)) {
+        if (checkSubstratumService(context)) {
+            SubstratumService.restartSystemUi();
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.restartSystemUI(context);
         } else {
             Root.runCommand("pkill -f com.android.systemui");

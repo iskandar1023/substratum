@@ -73,6 +73,7 @@ import projekt.substratum.R;
 import projekt.substratum.common.References;
 import projekt.substratum.common.commands.ElevatedCommands;
 import projekt.substratum.common.commands.FileOperations;
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 import projekt.substratum.common.platform.ThemeManager;
 import projekt.substratum.common.systems.ProfileItem;
@@ -1205,11 +1206,13 @@ public class ProfileFragment extends Fragment {
                 FileOperations.mountRO();
             }
 
-            if (References.checkThemeInterfacer(context)) {
-                ArrayList<String> toBeDisabled =
-                        new ArrayList<>(ThemeManager.listOverlays(context, STATE_APPROVED_ENABLED));
-                boolean shouldRestartUi = ThemeManager.shouldRestartUI(context, toBeDisabled)
-                        || ThemeManager.shouldRestartUI(context, toBeRun);
+            ArrayList<String> toBeDisabled =
+                    new ArrayList<>(ThemeManager.listOverlays(context, STATE_APPROVED_ENABLED));
+            boolean shouldRestartUi = ThemeManager.shouldRestartUI(context, toBeDisabled)
+                    || ThemeManager.shouldRestartUI(context, toBeRun);
+            if (References.checkSubstratumService(context)) {
+                SubstratumService.applyProfile(profileName, toBeDisabled, toBeRun, shouldRestartUi);
+            } else if (References.checkThemeInterfacer(context)) {
                 ThemeInterfacerService.applyProfile(context, profileName, toBeDisabled,
                         toBeRun,
                         shouldRestartUi);

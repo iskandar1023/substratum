@@ -43,10 +43,12 @@ import javax.crypto.Cipher;
 import projekt.substratum.R;
 import projekt.substratum.common.References;
 import projekt.substratum.common.commands.FileOperations;
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 import projekt.substratum.common.platform.ThemeManager;
 
 import static projekt.substratum.common.References.checkOMS;
+import static projekt.substratum.common.References.checkSubstratumService;
 import static projekt.substratum.common.References.checkThemeInterfacer;
 import static projekt.substratum.common.References.getProp;
 
@@ -83,7 +85,9 @@ public class SoundManager {
         boolean has_failed = false;
         boolean ringtone = false;
 
-        if (checkOMS(context) && checkThemeInterfacer(context)) {
+        if (checkOMS(context) && checkSubstratumService(context)) {
+            SubstratumService.setSounds(theme_pid, name);
+        } else if (checkOMS(context) && checkThemeInterfacer(context)) {
             ThemeInterfacerService.setThemedSounds(context, theme_pid, name);
             ringtone = true; // Always assume that the process is succeeded;
         } else {
@@ -211,7 +215,9 @@ public class SoundManager {
         // are cleared on the next reboot. The way the ContentResolver SQL database works is that it
         // checks the file integrity of _data (file path), and if the file is missing, the database
         // entry is removed.
-        if (checkOMS(context) && checkThemeInterfacer(context)) {
+        if (checkOMS(context) && checkSubstratumService(context)) {
+            SubstratumService.clearSounds();
+        } else if (checkOMS(context) && checkThemeInterfacer(context)) {
             ThemeInterfacerService.clearThemedSounds(context);
         } else {
             FileOperations.delete(context, "/data/system/theme/audio/");
