@@ -107,6 +107,7 @@ import projekt.substratum.activities.launch.ThemeLaunchActivity;
 import projekt.substratum.common.analytics.FirebaseAnalytics;
 import projekt.substratum.common.analytics.PackageAnalytics;
 import projekt.substratum.common.commands.ElevatedCommands;
+import projekt.substratum.common.platform.SubstratumService;
 import projekt.substratum.common.platform.ThemeInterfacerService;
 import projekt.substratum.common.tabs.SoundManager;
 import projekt.substratum.services.crash.AppCrashReceiver;
@@ -1872,9 +1873,11 @@ public class References {
     }
 
     public static void uninstallPackage(Context context, String packageName) {
-        if (checkThemeInterfacer(context)) {
-            ArrayList<String> list = new ArrayList<>();
-            list.add(packageName);
+        ArrayList<String> list = new ArrayList<>();
+        list.add(packageName);
+        if (checkSubstratumService(context)) {
+            SubstratumService.uninstallOverlay(list, false);
+        } else if (checkThemeInterfacer(context)) {
             ThemeInterfacerService.uninstallOverlays(context, list, false);
         } else {
             new ElevatedCommands.ThreadRunner().execute("pm uninstall " + packageName);
