@@ -133,8 +133,8 @@ public class AndromedaBinderService extends Service implements ServiceConnection
     @Override
     public void onDestroy() {
         super.onDestroy();
-        iAndromedaInterface = null;
-        bound = false;
+        //iAndromedaInterface = null;
+        //bound = false;
         Log.d(TAG, "Substratum has successfully unbinded with the Andromeda module.");
 
     }
